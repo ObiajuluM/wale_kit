@@ -1,3 +1,3 @@
 # wale_kit
 
-A new Flutter project.
+My demo for testing the flutter wallet connect appkit
