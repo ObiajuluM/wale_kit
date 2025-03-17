@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:wale_kit/chan.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -35,6 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+
     _appKitModal = ReownAppKitModal(
       context: context,
       projectId: '288fbb58ea9790bde773e949a76092c3', //
@@ -53,8 +56,44 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKitModal.init().then((value) => setState(() {}));
   }
 
+  void doIt() async {
+// AppKit instance
+    final appKit = await ReownAppKit.createInstance(
+      projectId: '288fbb58ea9790bde773e949a76092c3',
+      metadata: const PairingMetadata(
+        name: 'Example App',
+        description: 'Example app description',
+        url: 'https://example.com/',
+        icons: ['https://example.com/logo.png'],
+        redirect: Redirect(
+          native: 'exampleapp://',
+          universal: 'https://reown.com/exampleapp',
+          linkMode: true | false,
+        ),
+      ),
+    );
+
+// AppKit Modal instance
+    final _appKitModal = ReownAppKitModal(
+      context: context,
+      appKit: appKit,
+    );
+
+// Register here the event callbacks on the service you'd like to use. See `Events` section.
+
+    await _appKitModal.init();
+
+    DeepLinkHandler.init(_appKitModal);
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    Future.delayed(Duration(seconds: 5), () {
+      print("object");
+      doIt();
+    });
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
